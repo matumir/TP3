@@ -7,3 +7,9 @@ const api = axios.create({
 export const getPokemon = (name) => {
   return api.get(`/pokemon/${name}`);
 };
+
+export const getPokemons = (limit = 20,offset=0) => {
+  return api.get("/pokemon", {
+    params: { limit,offset },
+  });
+};

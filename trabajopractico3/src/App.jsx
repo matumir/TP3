@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from 'axios'
-import { getPokemon } from "./services/pokeapi";
+import { getPokemon,getPokemons } from "./services/pokeapi";
+import PokemonList from "./componentes/PokemonList";
 import './App.css'
 
 function App() {
@@ -9,6 +10,19 @@ function App() {
   const [busqueda, setBusqueda] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [pokemons, setPokemons] = useState([]);
+  const [pagina, setPagina]= useState(0);
+  const limit = 20;
+
+  useEffect(() => {
+    getPokemons(limit, pagina*limit)
+      .then((response) => {
+        setPokemons(response.data.results);
+      })
+      .catch((err) => console.log(err));
+  }, [pagina]);
+
+
   const buscarPokemon = () => {
     if (!busqueda) return;
 
@@ -62,8 +76,29 @@ function App() {
           <p>Altura: {pokemon.height}</p>
           <p>Peso: {pokemon.weight}</p>
         </div>
+
       )}
+      <h2>Lista de Pokémon</h2>
+      <PokemonList pokemons={pokemons} />
+    
+    <div>
+        <button
+          onClick={() => setPagina(pagina - 1)}
+          disabled={pagina === 0}
+        >
+          Anterior
+        </button>
+
+        <span> Página {pagina + 1} </span>
+
+        <button
+          onClick={() => setPagina(pagina + 1)}
+        >
+          Siguiente
+        </button>
+      </div>
     </div>
+    
   );
 }
 
