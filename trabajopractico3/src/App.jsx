@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
-import axios from 'axios'
-import { getPokemon,getPokemons } from "./services/pokeapi";
+import {getPokemon,getPokemons} from "./services/pokeapi";
+
 import PokemonList from "./componentes/PokemonList";
-import './App.css'
+import "./App.css";
 
 function App() {
-  
   const [pokemon, setPokemon] = useState(null);
+  const [pokemons, setPokemons] = useState([]);
+
   const [busqueda, setBusqueda] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [pokemons, setPokemons] = useState([]);
-  const [pagina, setPagina]= useState(0);
+
+  const [pagina, setPagina] = useState(0);
   const limit = 20;
 
   useEffect(() => {
-    getPokemons(limit, pagina*limit)
+    getPokemons(limit, pagina * limit)
       .then((response) => {
         setPokemons(response.data.results);
       })
       .catch((err) => console.log(err));
   }, [pagina]);
-
 
   const buscarPokemon = () => {
     if (!busqueda) return;
@@ -29,7 +29,7 @@ function App() {
     setLoading(true);
     setError(false);
 
-    axios.get(`https://pokeapi.co/api/v2/pokemon/${busqueda.toLowerCase()}`)
+    getPokemon(busqueda)
       .then((response) => {
         setPokemon(response.data);
       })
@@ -43,9 +43,15 @@ function App() {
       });
   };
 
+  const limpiarBusqueda = () => {
+    setPokemon(null);
+    setBusqueda("");
+    setError(false);
+  };
+
   return (
-    <div>
-      <h1>PokeAPI Test</h1>
+    <div className="app">
+      <h1>Pokédex</h1>
 
       <input
         type="text"
@@ -60,14 +66,16 @@ function App() {
         Buscar
       </button>
 
-      {loading && <p>Cargando...</p>}
+      <button onClick={limpiarBusqueda}>
+        Volver a lista
+      </button>
 
+      {loading && <p>Cargando...</p>}
       {error && <p>Error: Pokémon no encontrado</p>}
 
       {pokemon && !loading && !error && (
-        <div>
+        <div className="card">
           <h2>{pokemon.name}</h2>
-
           <img
             src={pokemon.sprites.front_default}
             alt={pokemon.name}
@@ -76,31 +84,33 @@ function App() {
           <p>Altura: {pokemon.height}</p>
           <p>Peso: {pokemon.weight}</p>
         </div>
-
       )}
-      <h2>Lista de Pokémon</h2>
-      <PokemonList pokemons={pokemons} />
-    
-    <div>
-        <button
-          onClick={() => setPagina(pagina - 1)}
-          disabled={pagina === 0}
-        >
-          Anterior
-        </button>
 
-        <span> Página {pagina + 1} </span>
+      {!pokemon && (
+        <>
+          <h2>Lista de Pokémon</h2>
+          <PokemonList pokemons={pokemons} />
 
-        <button
-          onClick={() => setPagina(pagina + 1)}
-        >
-          Siguiente
-        </button>
-      </div>
+          <div className="pagination">
+            <button
+              onClick={() => setPagina(pagina - 1)}
+              disabled={pagina === 0}
+            >
+              Anterior
+            </button>
+
+            <span> Página {pagina + 1} </span>
+
+            <button
+              onClick={() => setPagina(pagina + 1)}
+            >
+              Siguiente
+            </button>
+          </div>
+        </>
+      )}
     </div>
-    
   );
 }
 
-
-export default App
+export default App;
