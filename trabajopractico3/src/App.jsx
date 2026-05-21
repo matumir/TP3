@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
+import axios from 'axios'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-    const [pokemon, setPokemon] = useState(null);
+  
+  const [pokemon, setPokemon] = useState(null);
 
   useEffect(() => {
-    fetch("https://pokeapi.co/api/v2/pokemon/mewtwo")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setPokemon(data);
+    axios.get("https://pokeapi.co/api/v2/pokemon/mew")
+      .then((response) => {
+        console.log(response);
+        setPokemon(response.data);
       })
+  
       .catch((error) => {
-        console.error("Error:", error);
+        console.log("Error:", error);
       });
   }, []);
 
