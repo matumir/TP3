@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import {getPokemon,getPokemons} from "../services/pokeapi";
 
+import PokemonDetail from "./PokemonDetail";
 import PokemonList from "./PokemonList";
 import "../App.css";
 
-function App() {
+function Home() {
   const [pokemon, setPokemon] = useState(null);
   const [pokemons, setPokemons] = useState([]);
 
@@ -14,6 +15,21 @@ function App() {
 
   const [pagina, setPagina] = useState(0);
   const limit = 20;
+
+  const [modoComparar, setModoComparar] = useState(false);
+  const [seleccionados, setSeleccionados] = useState([]);
+
+  const seleccionarPokemon = (pokemon) => {
+    const yaExiste = seleccionados.find(p => p.name === pokemon.name);
+
+    if (yaExiste) {
+      setSeleccionados(seleccionados.filter(p => p.name !== pokemon.name));
+      return;
+    }
+    if (seleccionados.length < 2) {
+      setSeleccionados([...seleccionados, pokemon]);
+    }
+  s};
 
   useEffect(() => {
     getPokemons(limit, pagina * limit)
@@ -47,6 +63,8 @@ function App() {
     setPokemon(null);
     setBusqueda("");
     setError(false);
+    setModoComparar(false);
+    setSeleccionados([]);
   };
 
   return (
@@ -65,7 +83,18 @@ function App() {
       <button onClick={buscarPokemon}>
         Buscar
       </button>
-
+      <button onClick={() => {
+        if (modoComparar) {
+          setModoComparar(false);
+          setSeleccionados([]);
+        } else {
+          setModoComparar(true);
+          setSeleccionados([]);
+        }
+        }}
+      >
+        Comparar
+      </button>
       <button onClick={limpiarBusqueda}>
         Volver a lista
       </button>
@@ -84,10 +113,10 @@ function App() {
         </div>
       )}
 
-      {!pokemon && (
+      {!pokemon && !modoComparar &&(
         <>
           <h2>Lista de Pokémon</h2>
-          <PokemonList pokemons={pokemons} />
+          <PokemonList pokemons={pokemons} onSelect={modoComparar ? seleccionarPokemon : null} seleccionados={seleccionados}/>
 
           <div className="pagination">
             <button
@@ -107,8 +136,31 @@ function App() {
           </div>
         </>
       )}
+      {modoComparar && (
+        <>
+          <h2>Comparar Pokémon</h2>
+          {seleccionados.length < 2 && (
+            <>
+              <p>Seleccioná {2 - seleccionados.length} Pokémon</p>
+
+              <PokemonList
+                pokemons={pokemons}
+                onSelect={seleccionarPokemon}
+                seleccionados={seleccionados}
+              />
+            </>
+          )}
+          {seleccionados.length === 2 && (
+            <div className="compare-container">
+              {seleccionados.map((p) => (
+                <PokemonDetail key={p.name} name={p.name} />
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
 
-export default App;
+export default Home;

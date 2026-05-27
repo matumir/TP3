@@ -205,6 +205,7 @@ button:disabled {
 .arrow {
   font-size: 24px;
   font-weight: bold;
+  color: #111;
 }
 
 .type-fire { background-color: #F08030; }
@@ -225,3 +226,15 @@ button:disabled {
 .type-bug { background-color: #A8B820; }
 .type-ghost { background-color: #705898; }
 .type-steel { background-color: #B8B8D0; }
+
+.compare-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+.card.selected {
+  border: 3px solid red;
+  transform: scale(1.05);
+}

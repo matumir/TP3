@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-function PokemonCard({ pokemon }) {
+function PokemonCard({ pokemon, onSelect, selected  }) {
   const navigate = useNavigate();
 
   const id = pokemon.url.split("/")[6];
@@ -9,8 +9,15 @@ function PokemonCard({ pokemon }) {
 
   return (
     <div
-      className="card"
-      onClick={() => navigate(`/pokemon/${id}`)}
+      className={`card ${selected ? "selected" : ""}`}
+      onClick={() => {
+          if (onSelect) {
+            onSelect(pokemon);
+          } else {
+            navigate(`/pokemon/${id}`);
+          }
+        }
+      }
     >
       <img src={image} />
       <p>#{id}</p>

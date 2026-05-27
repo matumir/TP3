@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { getPokemon } from "../services/pokeapi";
 
 
-function PokemonDetail() {
-  const { id } = useParams();
+function PokemonDetail({ id, name }) {
+  const { id: paramId } = useParams();
   const navigate = useNavigate();
   
 
@@ -14,12 +14,18 @@ function PokemonDetail() {
     audio.play();
   };
 
+useEffect(() => {
+  const value = id || name || paramId;
 
-  useEffect(() => {
-    getPokemon(id)
-      .then((res) => setPokemon(res.data))
-      .catch(console.log);
-  }, [id]);
+  if (!value) return;
+
+  setPokemon(null);
+
+  getPokemon(value)
+    .then((res) => setPokemon(res.data))
+    .catch(console.log);
+
+}, [id, name, paramId]);
 
   if (!pokemon) return <p>Cargando...</p>;
   const mainType = pokemon.types[0].type.name;
