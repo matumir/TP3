@@ -2,9 +2,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getPokemon } from "../services/pokeapi";
 
+
 function PokemonDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  
 
   const [pokemon, setPokemon] = useState(null);
 
@@ -54,6 +56,9 @@ function PokemonDetail() {
       >
         Volver
       </button>
+      <button onClick={() => navigate(`/pokemon/${pokemon.id}/evolutions`)}>
+  Evoluciones
+</button>
     </div>
   );
 }

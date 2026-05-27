@@ -82,6 +82,7 @@ button:disabled {
 .card img {
   width: 100px;
   height: 100px;
+  object-fit: contain;
 }
 
 .card p {
@@ -105,13 +106,15 @@ button:disabled {
   margin: 2px
 }
 .detail {
-  max-width: 400px;
+  width: fit-content;
+  max-width: 800px;
   margin: 30px auto;
   background: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   text-align: center;
+
 }
 
 .detail h3 {
@@ -189,4 +192,19 @@ button:disabled {
 
 .back-btn:hover {
   background-color: #111;
+}
+
+
+
+.evolution-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20x;
+}
+
+.arrow {
+  font-size: 24px;
+  font-weight: bold;
 }
