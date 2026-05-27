@@ -9,6 +9,11 @@ function PokemonDetail() {
   
 
   const [pokemon, setPokemon] = useState(null);
+  const reproducirGrito = () => {
+    const audio = new Audio(pokemon.cries.latest);
+    audio.play();
+  };
+
 
   useEffect(() => {
     getPokemon(id)
@@ -17,16 +22,17 @@ function PokemonDetail() {
   }, [id]);
 
   if (!pokemon) return <p>Cargando...</p>;
+  const mainType = pokemon.types[0].type.name;
 
   return (
-    <div className="detail">
+    <div className={`detail type-${mainType}`}>
       <h1>{pokemon.name}</h1>
 
       <img src={pokemon.sprites.other["official-artwork"].front_default} alt={pokemon.name}/>
 
       <h3>Tipos</h3>
       {pokemon.types.map((t) => (
-        <span key={t.type.name}className={`type ${t.type.name}`}>
+        <span key={t.type.name} className={`type ${t.type.name}`}>
           {t.type.name}
         </span>
       ))}
@@ -57,8 +63,11 @@ function PokemonDetail() {
         Volver
       </button>
       <button onClick={() => navigate(`/pokemon/${pokemon.id}/evolutions`)}>
-  Evoluciones
-</button>
+        Evoluciones
+      </button>
+      <button onClick={reproducirGrito}>
+        Grito 🔊
+      </button>
     </div>
   );
 }
